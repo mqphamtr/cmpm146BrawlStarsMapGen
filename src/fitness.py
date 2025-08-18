@@ -22,20 +22,28 @@ def evaluate_map_fitness(game_map):
 
     # Hard Constraints
     if not valid_size(game_map):
+        print("❌ Invalid size")
         return 0
     if not valid_player_count(game_map):
+        print("❌ Wrong number of players")
         return 0
     if not valid_box_count(game_map):
+        print("❌ Wrong number of boxes")
         return 0
     if not all_clusters_valid(game_map):
+        print("❌ Invalid clusters")
         return 0
     if not player_box_distance_ok(game_map):
+        print("❌ Player-box distance rule failed")
         return 0
     if not central_area_ok(game_map):
+        print("❌ Central area missing boxes")
         return 0
     if not all_tiles_reachable(game_map):
+        print("❌ Not all tiles reachable")
         return 0
     if not close_spawns_have_barriers(game_map):
+        print("❌ Spawn barrier rule failed")
         return 0
 
     # Soft Constraints
