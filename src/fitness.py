@@ -6,11 +6,11 @@ WALKABLE = "empty"
 WALL = "wall"
 WATER = "water"
 COVER = "cover"
-BREAKABLE = "breakable"
+# BREAKABLE = "breakable"
 BOX = "box"
 SPAWN = "spawn"
 BUSH = "bush"
-FENCE = "fence"
+# FENCE = "fence"
 
 # Main Fitness Function
 def evaluate_map_fitness(game_map):
