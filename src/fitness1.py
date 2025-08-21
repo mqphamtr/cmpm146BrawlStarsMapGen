@@ -6,43 +6,47 @@ WALKABLE = "empty"
 WALL = "wall"
 WATER = "water"
 COVER = "cover"
+# BREAKABLE = "breakable"
 BOX = "box"
 SPAWN = "spawn"
 BUSH = "bush"
+# FENCE = "fence"
 
-# -------------------------------
 # Main Fitness Function
-# -------------------------------
 def evaluate_map_fitness(game_map):
     """
     Evaluate the fitness of a Brawl Stars map.
-    Hard constraints: must be satisfied.
-    Soft constraints: guide evolution via penalties.
     """
 
     score = 0
 
     # Hard Constraints
     if not valid_size(game_map):
+        print("❌ Invalid size")
         return 0
     if not valid_player_count(game_map):
+        print("❌ Wrong number of players")
         return 0
     if not valid_box_count(game_map):
+        print("❌ Wrong number of boxes")
+        return 0
+    if not all_clusters_valid(game_map):
+        print("❌ Invalid clusters")
+        return 0
+    if not player_box_distance_ok(game_map):
+        print("❌ Player-box distance rule failed")
+        return 0
+    if not central_area_ok(game_map):
+        print("❌ Central area missing boxes")
+        return 0
+    if not all_tiles_reachable(game_map):
+        print("❌ Not all tiles reachable")
+        return 0
+    if not close_spawns_have_barriers(game_map):
+        print("❌ Spawn barrier rule failed")
         return 0
 
-    # Soft Constraints as penalties
-    if not all_clusters_valid(game_map):
-        score -= 1
-    if not player_box_distance_ok(game_map):
-        score -= 1
-    if not central_area_ok(game_map):
-        score -= 5
-    if not all_tiles_reachable(game_map):
-        score -= 2
-    if not close_spawns_have_barriers(game_map):
-        score -= 1
-
-    # Positive contributions from soft scoring
+    # Soft Constraints
     score += symmetry_score(game_map) * 2
     score += obstacle_distribution_score(game_map) * 1.5
     score += bush_distribution_score(game_map) * 1.5
@@ -50,11 +54,10 @@ def evaluate_map_fitness(game_map):
     score += pathing_quality_score(game_map) * 1
     score += spawn_layout_score(game_map) * 2
 
-    return max(score, 0)  # ensure non-negative fitness
+    return score
 
-# -------------------------------
+
 # Hard Constraint Checks
-# -------------------------------
 def valid_size(game_map):
     rows, cols = len(game_map), len(game_map[0])
     return (rows, cols) in [(60, 60), (64, 64)]
@@ -102,9 +105,8 @@ def close_spawns_have_barriers(game_map):
                         return False
     return True
 
-# -------------------------------
+
 # Soft Scoring Functions
-# -------------------------------
 def symmetry_score(game_map):
     rows, cols = len(game_map), len(game_map[0])
     mismatch = 0
@@ -121,13 +123,13 @@ def obstacle_distribution_score(game_map):
     obstacle_count = sum(tile in obstacles for row in game_map for tile in row)
     total_tiles = len(game_map) * len(game_map[0])
     density = obstacle_count / total_tiles
-    return max(0, 1 - abs(density - 0.15) * 10) * 5
+    return max(0, 1 - abs(density - 0.15) * 10) * 5  # target 15% obstacles
 
 def bush_distribution_score(game_map):
     bushes = count_tiles(game_map, BUSH)
     total_tiles = len(game_map) * len(game_map[0])
     density = bushes / total_tiles
-    return max(0, 1 - abs(density - 0.10) * 10) * 5
+    return max(0, 1 - abs(density - 0.10) * 10) * 5  # target 10% bushes
 
 def box_distribution_score(game_map):
     box_positions = get_positions(game_map, BOX)
@@ -139,14 +141,15 @@ def box_distribution_score(game_map):
     return max(0, min(avg_dist / 10, 1)) * 5
 
 def pathing_quality_score(game_map):
-    return 5  # Placeholder
+    # Placeholder: Could check for choke points and alternative paths
+    return 5
 
 def spawn_layout_score(game_map):
-    return 5  # Placeholder
+    # Placeholder: reward if 4 in corners and 6 near center
+    return 5
 
-# -------------------------------
+
 # Utility Functions
-# -------------------------------
 def count_tiles(game_map, tile_type):
     return sum(row.count(tile_type) for row in game_map)
 
@@ -187,6 +190,7 @@ def bfs_count(game_map, start, walkable_tiles):
     return len(visited)
 
 def min_tile_distance(game_map, start, targets):
+    # BFS orthogonal only
     visited = set([start])
     queue = deque([(start[0], start[1], 0)])
     while queue:
@@ -196,10 +200,12 @@ def min_tile_distance(game_map, start, targets):
         for dr, dc in [(1,0),(-1,0),(0,1),(0,-1)]:
             nr, nc = r + dr, c + dc
             if 0 <= nr < len(game_map) and 0 <= nc < len(game_map[0]):
-                if (nr, nc) not in visited and game_map[nr][nc] not in {WALL, WATER, COVER}:
+                if (nr, nc) not in visited and game_map[nr][nc] != WALL and game_map[nr][nc] != WATER and game_map[nr][nc] != COVER:
                     visited.add((nr, nc))
                     queue.append((nr, nc, d + 1))
     return float("inf")
 
 def has_barrier_between(game_map, a, b, min_len, max_len):
-    return True  # Placeholder
+    # Placeholder: Simplified check that there are enough obstacle tiles in straight/near line
+    return True  
+

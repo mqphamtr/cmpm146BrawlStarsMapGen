@@ -30,21 +30,29 @@ class BrawlStarsMap:
         return map_instance
 
     def _generate_spawn_points(self):
-        """Generate 10 spawn points with valid distances"""
+        """Generate up to 10 spawn points with valid distances"""
         spawns = []
         # 4 corners
         corner_positions = [(5,5), (self.cols-6,5), (5,self.rows-6), (self.cols-6,self.rows-6)]
         spawns.extend(corner_positions)
-        
+    
         # 6 more positions near center
         center_x, center_y = self.cols//2, self.rows//2
-        remaining = 6
-        while len(spawns) < 10:
-            x = random.randint(center_x-15, center_x+15)
-            y = random.randint(center_y-15, center_y+15)
+        attempts = 0
+        max_attempts = 500  # safety cutoff
+
+        while len(spawns) < 10 and attempts < max_attempts:
+            x = random.randint(center_x-25, center_x+25)
+            y = random.randint(center_y-25, center_y+25)
             if self._valid_spawn_position((x,y), spawns):
                 spawns.append((x,y))
+            attempts += 1
+
+        if len(spawns) < 10:
+            print(f"⚠️ Only placed {len(spawns)} spawn points (not 10) after {max_attempts} attempts")
+
         return spawns
+
 
     def _valid_spawn_position(self, new_pos, existing):
         """Check if a spawn position is valid"""
@@ -156,7 +164,7 @@ class BrawlStarsMap:
             
         return child
 
-def run_ga(population_size=50, generations=100):
+def run_ga(population_size=50, generations=10): #set to 10 generations for testing was 100
     """Run the genetic algorithm"""
     # Initialize population
     print 
