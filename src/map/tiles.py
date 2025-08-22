@@ -11,6 +11,6 @@ class Tile(IntEnum):
 LEGEND = {t.name: int(t) for t in Tile}
 
 #maps height and width
-MAP_H, MAP_W = 20, 20
+MAP_H, MAP_W = 60, 60
 
 MUTABLE_TILES = (Tile.EMPTY, Tile.WALL, Tile.BUSH, Tile.POWER_ITEM)

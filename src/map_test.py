@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from map.map_repr import BSMap
 from map.io_fmt import save_map_json
+from map.io_fmt import save_map_txt
 
 if __name__ == "__main__":
     np.random.seed(123)
@@ -14,5 +15,6 @@ if __name__ == "__main__":
     plt.axis("off")
     plt.show()
 
-    save_map_json(m, "sample_map.json")             #save as .json for unity
-    print("Saved sample_map.json")
+    #save_map_json(m, "sample_map.json")             #save as .json for unity
+    save_map_txt(m, "sample_map.txt")
+    print("Saved sample_map.txt")
