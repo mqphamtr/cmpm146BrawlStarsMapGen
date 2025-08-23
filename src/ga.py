@@ -156,7 +156,10 @@ class BrawlStarsMap:
 # ------------------------
 # Genetic Algorithm Runner
 # ------------------------
-def run_ga(population_size=50, generations=100):
+def run_ga(population_size=50, generations=100, seed = None):
+    if seed is not None:
+        random.seed(seed)
+
     population = [BrawlStarsMap.random_map() for _ in range(population_size)]
     
     for gen in range(generations):
@@ -192,6 +195,33 @@ def tournament_select(population, tournament_size=3):
     return max(tournament, key=lambda x: x.fitness)
 
 
+# if __name__ == "__main__":
+#     best_map = run_ga()
+#     print(f"Final fitness: {best_map.fitness}")
+
+
+ID_MAP = {
+    WALKABLE: 0,
+    WALL:     1,
+    BUSH:     2,
+    SPAWN:    3,
+    COVER:    4,
+    WATER:    5,
+    BOX:      6
+}
+
+def save_map_txt_strgrid(str_grid, path):
+    with open(path, "w", newline="\n") as f:
+        for row in str_grid:
+            f.write(" ".join(str(ID_MAP.get(cell, 0)) for cell in row) + "\n")
+
+
 if __name__ == "__main__":
-    best_map = run_ga()
+    best_map = run_ga(population_size=60, generations=80, seed=42)
     print(f"Final fitness: {best_map.fitness}")
+    #from datetime import datetime
+    #out = f"best_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    out = "best_map.txt"
+    save_map_txt_strgrid(best_map.map, out)
+    print("Saved TXT to", out)
+
