@@ -65,7 +65,7 @@ class BrawlStarsMap:
                 placed += 1
 
     def _add_walls(self, rng):
-        target = int(self.rows * self.cols * 0.20)
+        target = int(self.rows * self.cols * 0.25)
         obstacles = [WALL]
         placed = 0
         while placed < target:
@@ -176,7 +176,7 @@ def run_ga(population_size=50, generations=100, seed=None):
             p1 = tournament_select(population, rng)
             p2 = tournament_select(population, rng)
             child = p1.crossover(p2, rng)
-            if rng.random() < 0.90:  # mutation rate
+            if rng.random() < 0.99:  # mutation rate
                 child.mutate(rng)
             new_population.append(child)
 

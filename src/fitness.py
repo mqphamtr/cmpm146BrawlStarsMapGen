@@ -29,9 +29,9 @@ def evaluate_map_fitness(game_map):
     #soft scoring
     score = 0
     score += symmetry_score(game_map)
-    score += reachable_tiles_score(game_map)
+    score += reachable_tiles_score(game_map) 
     score += central_area_score(game_map)
-    score += wall_cluster_score(game_map)
+    score += wall_cluster_score(game_map) 
 
     return score
 
@@ -79,6 +79,8 @@ def reachable_tiles_score(game_map):
     visited = set([start])
     queue = deque([start])
 
+    score = 1
+
     while queue:
         r, c = queue.popleft()
         for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
@@ -87,8 +89,9 @@ def reachable_tiles_score(game_map):
                 if (nr, nc) not in visited and game_map[nr][nc] in TRAVERSABLE:
                     visited.add((nr, nc))
                     queue.append((nr, nc))
+                    score += 2 #score
 
-    return len(visited)
+    return score
 
 def central_area_score(game_map):
     """
@@ -116,7 +119,7 @@ def central_area_score(game_map):
     for r in range(r_start, r_end):
         for c in range(c_start, c_end):
             if game_map[r][c] in desirable:
-                score += 5 #score
+                score += 40 #score
 
     return score
 
@@ -150,7 +153,7 @@ def wall_cluster_score(game_map):
                                 stack.append((nr, nc))
 
                 # Reward cluster based on size
-                total_score += cluster_size ** 1.5
+                total_score += cluster_size * 1.5
 
     return total_score
 
