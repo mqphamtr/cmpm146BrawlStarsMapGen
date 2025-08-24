@@ -185,7 +185,8 @@ def save_map_txt_strgrid(str_grid, path):
 if __name__ == "__main__":
     best_map = run_ga(population_size=60, generations=80)  # seed=None => different each run
     print(f"Final fitness: {best_map.fitness}")
-    from datetime import datetime
-    out = f"best_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    # from datetime import datetime
+    # out = f"best_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    out = f"best_map.txt"
     save_map_txt_strgrid(best_map.map, out)
     print("Saved TXT to", out)
