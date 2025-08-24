@@ -37,8 +37,6 @@ def evaluate_map_fitness(game_map):
         score -= 5
     if not central_area_ok(game_map):
         score -= 5
-    if not all_tiles_reachable(game_map):
-        score -= 5
     if not close_spawns_have_barriers(game_map):
         score -= 5
 
@@ -82,7 +80,7 @@ def central_area_ok(game_map):
     center = get_map_center(game_map)
     center_boxes = count_boxes_in_radius(game_map, center, radius=8)
     return center_boxes >= 8
-
+'''
 def all_tiles_reachable(game_map):
     walkable_tiles = {WALKABLE, BOX, BUSH, SPAWN}
     start = get_first_walkable_tile(game_map)
@@ -91,7 +89,7 @@ def all_tiles_reachable(game_map):
     reachable = bfs_count(game_map, start, walkable_tiles)
     total_walkable = sum(tile in walkable_tiles for row in game_map for tile in row)
     return reachable == total_walkable
-
+'''
 def close_spawns_have_barriers(game_map):
     spawns = get_positions(game_map, SPAWN)
     for i, a in enumerate(spawns):
