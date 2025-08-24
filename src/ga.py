@@ -18,7 +18,9 @@ class BrawlStarsMap:
             for x, y in m._generate_spawn_points(rng):
                 m.map[y][x] = SPAWN
             m._place_boxes(rng, rng.randint(20, 35))
-            m._add_obstacles(rng)
+            m._add_walls(rng)
+            m._add_water(rng)
+            m._add_cover(rng)
             m._add_bushes(rng)
             if evaluate_map_fitness(m.map) > 0:
                 return m
@@ -62,9 +64,31 @@ class BrawlStarsMap:
                 self.map[y][x] = BOX
                 placed += 1
 
-    def _add_obstacles(self, rng):
-        target = int(self.rows * self.cols * 0.15)
-        obstacles = [WALL, WATER, COVER]
+    def _add_walls(self, rng):
+        target = int(self.rows * self.cols * 0.20)
+        obstacles = [WALL]
+        placed = 0
+        while placed < target:
+            x = rng.randint(0, self.cols - 1)
+            y = rng.randint(0, self.rows - 1)
+            if self.map[y][x] == WALKABLE:
+                self.map[y][x] = rng.choice(obstacles)
+                placed += 1
+    
+    def _add_water(self, rng):
+        target = int(self.rows * self.cols * 0.10)
+        obstacles = [WATER]
+        placed = 0
+        while placed < target:
+            x = rng.randint(0, self.cols - 1)
+            y = rng.randint(0, self.rows - 1)
+            if self.map[y][x] == WALKABLE:
+                self.map[y][x] = rng.choice(obstacles)
+                placed += 1
+
+    def _add_cover(self, rng):
+        target = int(self.rows * self.cols * 0.05)
+        obstacles = [COVER]
         placed = 0
         while placed < target:
             x = rng.randint(0, self.cols - 1)
@@ -152,7 +176,7 @@ def run_ga(population_size=50, generations=100, seed=None):
             p1 = tournament_select(population, rng)
             p2 = tournament_select(population, rng)
             child = p1.crossover(p2, rng)
-            if rng.random() < 0.10:  # mutation rate
+            if rng.random() < 0.90:  # mutation rate
                 child.mutate(rng)
             new_population.append(child)
 

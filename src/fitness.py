@@ -150,7 +150,7 @@ def wall_cluster_score(game_map):
                                 stack.append((nr, nc))
 
                 # Reward cluster based on size
-                total_score += cluster_size ** 2.7
+                total_score += cluster_size ** 1.5
 
     return total_score
 
