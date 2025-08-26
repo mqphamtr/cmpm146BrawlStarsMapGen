@@ -7,6 +7,7 @@ from fitness import (
 import collections
 import map_sliders
 
+#Michael, Ann, Matthew, Kiana
 PASSABLE = {WALKABLE, BUSH, SPAWN}
 OBSTACLE = {WALL, WATER, COVER, BOX}
 
